@@ -43,12 +43,3 @@ MIT License - Free to use, modify, and distribute.
 ## Disclaimer
 
 LinkHawk is designed for ethical security testing and bug bounty research. Always respect the terms of service of target websites and applicable laws.
-
-## Support
-
-Issues & Feedback: https://github.com/Defend-X/crawlex/issues
-Contact: mdaif1332@gmail.com
-
----
-
-Built with precision by **DefendyX Team**
