@@ -149,6 +149,12 @@ function init(paginationContainer, urlsContainer) {
         paginationList.classList.add("pagination");
         paginationList.classList.add("flex-wrap");
 
+        const prevBtn = document.createElement("li");
+        prevBtn.className = "page-item" + (currentPage === 1 ? " disabled" : "");
+        prevBtn.innerHTML = `<a class="page-link" href="#">&laquo; Prev</a>`;
+        prevBtn.dataset.action = "prev";
+        paginationList.appendChild(prevBtn);
+
         const maxVisiblePages = 7;
         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
         let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -183,15 +189,43 @@ function init(paginationContainer, urlsContainer) {
             paginationList.appendChild(lastItem);
         }
 
+        const nextBtn = document.createElement("li");
+        nextBtn.className = "page-item" + (currentPage === totalPages ? " disabled" : "");
+        nextBtn.innerHTML = `<a class="page-link" href="#">Next &raquo;</a>`;
+        nextBtn.dataset.action = "next";
+        paginationList.appendChild(nextBtn);
+
         paginationContainer.appendChild(paginationList);
 
         paginationList.addEventListener("click", function (event) {
             event.preventDefault();
+            const listItem = event.target.closest('.page-item');
+            if (!listItem) return;
+
+            if (listItem.dataset.action === "prev") {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                    createPagination();
+                }
+                return;
+            }
+            if (listItem.dataset.action === "next") {
+                const total = filteredUrls.length;
+                const totalPages = Math.ceil(total / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                    createPagination();
+                }
+                return;
+            }
             if (event.target.classList.contains("page-link") && event.target.tagName === 'A') {
                 const pageNumber = parseInt(event.target.textContent);
                 if (!isNaN(pageNumber)) {
                     currentPage = pageNumber;
                     showPage(currentPage);
+                    createPagination();
                 }
             }
         });
