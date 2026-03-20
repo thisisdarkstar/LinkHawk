@@ -4,29 +4,37 @@
     "description": "Hawk down all URLs from any website with a single click",
     "manifest_version": 3,
     "author": "MohammedDief (demonia) @ Defendyx",
-
     "action": {
         "default_popup": "index.html",
         "default_title": "LinkHawk",
         "default_icon": {
-            "16": "assets/icons/icon.svg",
-            "128": "assets/icons/icon-128.svg"
+            "16": "assets/icons/icon-16.png",
+            "32": "assets/icons/icon-32.png",
+            "48": "assets/icons/icon-48.png",
+            "128": "assets/icons/icon-128.png"
         }
     },
-
     "host_permissions": [
         "*://*/*"
     ],
-
     "permissions": [
         "activeTab",
         "scripting"
     ],
-
+    "icons": {
+        "16": "assets/icons/icon-16.png",
+        "32": "assets/icons/icon-32.png",
+        "48": "assets/icons/icon-48.png",
+        "128": "assets/icons/icon-128.png"
+    },
     "content_scripts": [
         {
-          "matches": ["<all_urls>"],
-          "js": ["assets/javascript/crawler.js"]
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "assets/javascript/crawler.js"
+            ]
         }
     ]
 }
