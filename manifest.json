@@ -1,0 +1,32 @@
+{
+    "name": "LinkHawk",
+    "version": "1.0.0",
+    "description": "Hawk down all URLs from any website with a single click",
+    "manifest_version": 3,
+    "author": "MohammedDief (demonia) @ Defendyx",
+
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "LinkHawk",
+        "default_icon": {
+            "16": "assets/icons/icon.svg",
+            "128": "assets/icons/icon-128.svg"
+        }
+    },
+
+    "host_permissions": [
+        "*://*/*"
+    ],
+
+    "permissions": [
+        "activeTab",
+        "scripting"
+    ],
+
+    "content_scripts": [
+        {
+          "matches": ["<all_urls>"],
+          "js": ["assets/javascript/crawler.js"]
+        }
+    ]
+}

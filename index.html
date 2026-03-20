@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkHawk</title>
+
+    <!-- Adding bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles -->
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #212529;
+            --border-color: #dee2e6;
+            --card-bg: #f8f9fa;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --muted-color: #6c757d;
+            --link-color: #6366f1;
+            --input-bg: #ffffff;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a2e;
+            --text-color: #e4e4e7;
+            --border-color: #3f3f5a;
+            --card-bg: #16213e;
+            --accent-color: #818cf8;
+            --accent-hover: #a5b4fc;
+            --muted-color: #a1a1aa;
+            --link-color: #818cf8;
+            --input-bg: #1f1f3a;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 400px;
+            min-height: 450px;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 13px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .subtitle {
+            color: var(--muted-color);
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        #pagination-container {
+            max-height: 280px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background: var(--card-bg);
+            padding: 4px;
+        }
+
+        #pagination-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #pagination-container::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+
+        #pagination-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        #urls-list {
+            margin-bottom: 0;
+        }
+
+        .pagination {
+            margin: 8px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .page-item .page-link {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.2s;
+        }
+
+        .page-item .page-link:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .page-item.active .page-link {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .list-group-item {
+            padding: 8px 12px;
+            font-size: 12px;
+            word-break: break-all;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+
+        .list-group-item:hover {
+            border-color: var(--accent-color);
+            box-shadow: var(--shadow);
+        }
+
+        .controls-section {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: var(--muted-color);
+        }
+
+        .per-page-select {
+            padding: 2px 6px;
+            font-size: 11px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            color: var(--text-color);
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .results-info {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-size: 11px;
+            color: var(--muted-color);
+            margin-top: 8px;
+        }
+
+        .results-text {
+            color: var(--muted-color);
+        }
+
+        .export-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 12px;
+        }
+
+        .export-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 3px 10px;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .export-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .export-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            min-width: 120px;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .export-menu.show {
+            display: block;
+        }
+
+        .export-menu a {
+            display: block;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        .export-menu a:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .controls-section {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .spinner-border {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-width: 3px;
+            color: var(--accent-color);
+        }
+
+        .error-message {
+            color: #f87171;
+            padding: 12px;
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 12px;
+        }
+
+        .empty-message {
+            color: var(--muted-color);
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .results-info {
+            font-size: 11px;
+            color: var(--muted-color);
+            margin-top: 8px;
+        }
+
+        .icon-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--muted-color);
+            margin-top: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <div class="header-actions">
+            <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                <span id="theme-icon">☀️</span>
+            </button>
+        </div>
+        <h1>LinkHawk <img src="assets/icons/icon.svg" alt="Icon" width="26" height="26" class="icon-pulse"></h1>
+        <p class="subtitle" id="subtitle">Hawk down URLs from any page</p>
+        <p id="message"></p>
+        
+        <div class="loading-spinner" id="loading-spinner">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Crawling page...</p>
+        </div>
+
+        <div id="error-container"></div>
+
+        <div class="controls-section" id="controls-section" style="display: none;">
+            <input type="text" class="search-input" id="search-input" placeholder="Search URLs...">
+        </div>
+
+        <div class="url-list">
+            <ul class="list-group" id="urls-list"></ul>
+            <div id="pagination-container"></div>
+        </div>
+
+        <div class="results-info" id="results-info">
+            <select class="per-page-select" id="per-page-select">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+            <span class="results-text" id="results-text"></span>
+            <div class="export-dropdown">
+                <button class="export-btn" id="export-btn">Export ▼</button>
+                <div class="export-menu" id="export-menu">
+                    <a href="#" id="export-txt">Export as TXT</a>
+                    <a href="#" id="export-json">Export as JSON</a>
+                </div>
+            </div>
+        </div>
+        <div class="status-bar" id="status-bar">
+            <span class="status-dot"></span>
+            <span>Ready</span>
+        </div>
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="assets/javascript/theme.js"></script>
+    <script src="assets/javascript/crawler.js"></script>
+</body>
+</html>
